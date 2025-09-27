@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vigenère Cipher Tool</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    label {
+        font-weight: bold;
+    }
+    input, textarea, select {
+        width: 100%;
+        padding: 8px;
+        margin: 6px 0 12px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+    button:hover { background-color: #0056b3; }
+    .output {
+        background: #eee;
+        padding: 10px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Vigenère Cipher Tool</h1>
+
+<div class="container">
+    <label for="cipherKey">Key:</label>
+    <input type="text" id="cipherKey" placeholder="Enter key">
+
+    <label for="cipherText">Message:</label>
+    <textarea id="cipherText" rows="4" placeholder="Enter text to encode or decode"></textarea>
+
+    <label for="action">Action:</label>
+    <select id="action">
+        <option value="encode">Encode</option>
+        <option value="decode">Decode</option>
+    </select>
+
+    <button onclick="processCipher()">Run Cipher</button>
+
+    <h3>Output:</h3>
+    <div id="cipherOutput" class="output"></div>
+</div>
+
+<script>
+function vigenere(text, key, encode=true) {
+    let result = '';
+    key = key.replace(/[^a-zA-Z]/g, '');
+    if (key.length === 0) return 'Key must contain letters!';
+    let ki = 0;
+    for (let i = 0; i < text.length; i++) {
+        let ch = text[i];
+        if (/[a-zA-Z]/.test(ch)) {
+            let base = (ch === ch.toUpperCase()) ? 65 : 97;
+            let shift = key[ki % key.length].toUpperCase().charCodeAt(0) - 65;
+            if (!encode) shift = 26 - shift;
+            let newChar = String.fromCharCode((ch.charCodeAt(0) - base + shift) % 26 + base);
+            result += newChar;
+            ki++;
+        } else {
+            result += ch;
+        }
+    }
+    return result;
+}
+
+function processCipher() {
+    const key = document.getElementById('cipherKey').value;
+    const text = document.getElementById('cipherText').value;
+    const action = document.getElementById('action').value;
+    const output = vigenere(text, key, action === 'encode');
+    document.getElementById('cipherOutput').textContent = output;
+}
+</script>
+
+</body>
+</html>
